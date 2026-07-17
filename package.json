@@ -1,0 +1,9 @@
+{
+  "name": "bright-moments-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Luminary Hospice Bright Moments: public gallery, colleague upload dashboard, and admin review page.",
+  "dependencies": {
+    "@netlify/blobs": "^7.3.0"
+  }
+}
