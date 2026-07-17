@@ -1,6 +1,5 @@
-const { getStore } = require('@netlify/blobs');
 const crypto = require('crypto');
-const { verifyToken, getBearerToken, json } = require('./_shared');
+const { verifyToken, getBearerToken, json, store } = require('./_shared');
 
 const MAX_BYTES = 4.5 * 1024 * 1024; // ~4.5MB raw file limit
 
@@ -28,7 +27,7 @@ exports.handler = async (event) => {
     return json(400, { error: 'Type must be "photo" or "video".' });
   }
 
-  const manifestStore = getStore('bright-moments-manifest');
+  const manifestStore = store('bright-moments-manifest');
   const items = (await manifestStore.get('items.json', { type: 'json' })) || [];
 
   const id = crypto.randomUUID();
@@ -49,7 +48,7 @@ exports.handler = async (event) => {
     if (buffer.length > MAX_BYTES) {
       return json(400, { error: 'That photo is too large. Please keep files under 4.5MB.' });
     }
-    const mediaStore = getStore('bright-moments-media');
+    const mediaStore = store('bright-moments-media');
     const blobKey = `${id}-${fileName}`;
     await mediaStore.set(blobKey, buffer, {
       metadata: { contentType: mimeType || 'application/octet-stream' },
