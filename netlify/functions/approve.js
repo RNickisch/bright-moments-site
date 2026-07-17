@@ -1,5 +1,4 @@
-const { getStore } = require('@netlify/blobs');
-const { verifyToken, getBearerToken, json } = require('./_shared');
+const { verifyToken, getBearerToken, json, store } = require('./_shared');
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') return json(405, { error: 'Method not allowed' });
@@ -21,7 +20,7 @@ exports.handler = async (event) => {
     return json(400, { error: 'id and action ("approve" or "reject") are required.' });
   }
 
-  const manifestStore = getStore('bright-moments-manifest');
+  const manifestStore = store('bright-moments-manifest');
   const items = (await manifestStore.get('items.json', { type: 'json' })) || [];
   const index = items.findIndex((item) => item.id === id);
   if (index === -1) return json(404, { error: 'Item not found.' });
@@ -31,7 +30,7 @@ exports.handler = async (event) => {
   } else {
     const [removed] = items.splice(index, 1);
     if (removed && removed.blobKey) {
-      const mediaStore = getStore('bright-moments-media');
+      const mediaStore = store('bright-moments-media');
       await mediaStore.delete(removed.blobKey);
     }
   }
