@@ -1,6 +1,15 @@
 const crypto = require('crypto');
+const { getStore } = require('@netlify/blobs');
 
 const TOKEN_TTL_MS = 12 * 60 * 60 * 1000; // 12 hours
+
+function store(name) {
+  return getStore({
+    name,
+    siteID: process.env.NETLIFY_SITE_ID,
+    token: process.env.NETLIFY_API_TOKEN,
+  });
+}
 
 function sign(payload) {
   const secret = process.env.AUTH_SECRET || 'change-me-in-netlify-env-vars';
@@ -41,4 +50,4 @@ function json(statusCode, data) {
   };
 }
 
-module.exports = { createToken, verifyToken, getBearerToken, json };
+module.exports = { createToken, verifyToken, getBearerToken, json, store };
