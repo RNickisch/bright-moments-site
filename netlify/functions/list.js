@@ -1,8 +1,7 @@
-const { getStore } = require('@netlify/blobs');
-const { verifyToken, getBearerToken, json } = require('./_shared');
+const { verifyToken, getBearerToken, json, store } = require('./_shared');
 
 exports.handler = async (event) => {
-  const manifestStore = getStore('bright-moments-manifest');
+  const manifestStore = store('bright-moments-manifest');
   const items = (await manifestStore.get('items.json', { type: 'json' })) || [];
 
   const wantsAll = event.queryStringParameters && event.queryStringParameters.all === 'true';
